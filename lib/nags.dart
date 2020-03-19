@@ -23,6 +23,11 @@ class _NagsPageState extends State<NagsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Hello world'));
+    return Scaffold(
+      appBar: AppBar(title: Text('Nagger')),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+      ),
+    );
   }
 }
