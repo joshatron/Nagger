@@ -8,16 +8,12 @@ class NagsPage extends StatefulWidget {
 }
 
 class _NagsPageState extends State<NagsPage> {
-  int _counter = 0;
+  var nags = List<String>();
 
-  void _incrementCounter() {
+  void _addNag() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      var number = nags.length + 1;
+      nags.add('Nag $number');
     });
   }
 
@@ -25,8 +21,20 @@ class _NagsPageState extends State<NagsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Nagger')),
+      body: ListView.separated(
+        padding: EdgeInsets.all(8),
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            height: 50,
+            child: Center(child: Text(nags[index])),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) => Divider(),
+        itemCount: nags.length,
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
+        onPressed: _addNag,
       ),
     );
   }
