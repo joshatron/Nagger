@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import 'nag.dart';
+import 'new_nag.dart';
 
 class NagsPage extends StatefulWidget {
   NagsPage({Key key}) : super(key: key);
@@ -15,15 +16,14 @@ class _NagsPageState extends State<NagsPage> {
   Nag _lastDeleted;
   int _lastDeletedIndex;
 
-  void _addNag() {
-    setState(() {
-      _nags.add(Nag(
-        name: 'Nag ' + (_nags.length + 1).toString(),
-        repeatAmount: (_nags.length * 2 + 1),
-        repeatUnit: RepeatUnit.seconds,
-        start: DateTime.now(),
-      ));
-    });
+  void _addNag(BuildContext context) async {
+    var newNag = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewNagScreen()));
+
+    if(newNag != null) {
+      setState(() {
+        _nags.add(newNag);
+      });
+    }
   }
 
   @override
@@ -66,7 +66,7 @@ class _NagsPageState extends State<NagsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: _addNag,
+        onPressed: () {_addNag(context);},
       ),
     );
   }

@@ -6,9 +6,10 @@ class Nag extends StatefulWidget {
   final int repeatAmount;
   final RepeatUnit repeatUnit;
   final DateTime start;
+  final String question;
   final AnswerType answerType;
 
-  Nag({Key key, @required this.name, @required this.repeatAmount, @required this.repeatUnit, @required this.start, this.answerType = AnswerType.confirmation}) : super(key: key);
+  Nag({Key key, @required this.name, @required this.repeatAmount, @required this.repeatUnit, @required this.start, @required this.question, this.answerType = AnswerType.confirmation}) : super(key: key);
 
   @override
   _NagState createState() => _NagState();
