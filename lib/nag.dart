@@ -1,21 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class Nag extends StatefulWidget {
-  final String name;
-  final int repeatAmount;
-  final RepeatUnit repeatUnit;
-  final DateTime start;
-  final String question;
-  final AnswerType answerType;
+class NagWidget extends StatefulWidget {
+  final Nag nag;
 
-  Nag({Key key, @required this.name, @required this.repeatAmount, @required this.repeatUnit, @required this.start, @required this.question, this.answerType = AnswerType.confirmation}) : super(key: key);
+  NagWidget({Key key, @required this.nag}) : super(key: key);
 
   @override
-  _NagState createState() => _NagState();
+  _NagWidgetState createState() => _NagWidgetState();
 }
 
-class _NagState extends State<Nag> {
+class _NagWidgetState extends State<NagWidget> {
   bool _collapsed = true;
 
   void toggleCollapsed() {
@@ -30,8 +25,8 @@ class _NagState extends State<Nag> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: <Widget>[
-          Expanded(child: Text(widget.name)),
-          Text(printRepeat(widget.repeatAmount, widget.repeatUnit)),
+          Expanded(child: Text(widget.nag.name)),
+          Text(printRepeat(widget.nag.repeatAmount, widget.nag.repeatUnit)),
         ],
       ),
     );
@@ -40,7 +35,7 @@ class _NagState extends State<Nag> {
   Widget buildExpanded() {
     return Container(
       height: 200,
-      child: Center(child: Text(widget.name)),
+      child: Center(child: Text(widget.nag.name)),
     );
   }
 
@@ -51,6 +46,18 @@ class _NagState extends State<Nag> {
       child: _collapsed ? buildCollapsed() : buildExpanded(),
     );
   }
+}
+
+class Nag {
+  String name;
+  int repeatAmount;
+  RepeatUnit repeatUnit;
+  DateTime start;
+  String question;
+  AnswerType answerType;
+  bool active;
+
+  Nag(this.name, this.repeatAmount, this.repeatUnit, this.start, this.question, this.answerType, {this.active = true});
 }
 
 enum RepeatUnit {
@@ -77,4 +84,21 @@ String printRepeat(int repeatAmount, RepeatUnit repeatUnit) {
     return 'every ' + enumStr.substring(0, enumStr.length - 1);
   }
   return 'every ' + repeatAmount.toString() + ' ' + enumStr;
+}
+
+String printAnswerType(AnswerType answerType) {
+  switch(answerType) {
+    case AnswerType.confirmation:
+      return 'Confirmation';
+    case AnswerType.yesno:
+      return 'Yes/No';
+    case AnswerType.text:
+      return 'Text';
+    case AnswerType.scale5:
+      return 'Rating 1-5';
+    case AnswerType.scale10:
+      return 'Scale 1-10';
+  }
+
+  return 'N/A';
 }

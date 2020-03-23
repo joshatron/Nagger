@@ -29,7 +29,7 @@ class _NagsPageState extends State<NagsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Nagger')),
+      appBar: AppBar(title: Text('Nags')),
       body: ListView.separated(
         itemBuilder: (BuildContext context, int index) {
           return Dismissible(
@@ -58,7 +58,7 @@ class _NagsPageState extends State<NagsPage> {
               ));
             },
             background: Container(color: Colors.red),
-            child: _nags[index],
+            child: NagWidget(nag: _nags[index]),
           );
         },
         separatorBuilder: (BuildContext context, int index) => Divider(),

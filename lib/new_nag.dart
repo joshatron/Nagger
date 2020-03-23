@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nagger/nag.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -9,7 +10,21 @@ class NewNagScreen extends StatefulWidget {
 }
 
 class _NewNagState extends State<NewNagScreen> {
-  RepeatUnit _dropdownValue = RepeatUnit.minutes;
+  RepeatUnit _currentRepeat = RepeatUnit.minutes;
+  AnswerType _currentAnswer = AnswerType.confirmation;
+  DateTime _currentStart = DateTime.now();
+
+  final _titleController = TextEditingController();
+  final _repeatController = TextEditingController();
+  final _questionController = TextEditingController();
+  final _titleFocus = FocusNode();
+  final _repeatFocus = FocusNode();
+  final _questionFocus = FocusNode();
+
+  _fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,20 +33,27 @@ class _NewNagState extends State<NewNagScreen> {
       body: Column(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Title',
-              ),
-            )
-          ),
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: TextField(
+                controller: _titleController,
+                focusNode: _titleFocus,
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () {_fieldFocusChange(context, _titleFocus, _repeatFocus);},
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Title',
+                ),
+              )),
           Container(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
             child: Row(
               children: <Widget>[
                 Expanded(
                   child: TextField(
+                    controller: _repeatController,
+                    focusNode: _repeatFocus,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () {_fieldFocusChange(context, _repeatFocus, _questionFocus);},
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Repeat',
@@ -40,26 +62,58 @@ class _NewNagState extends State<NewNagScreen> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                  child: DropdownButton(
-                    value: _dropdownValue,
-                    onChanged: (RepeatUnit newValue) {
-                      setState(() {
-                        _dropdownValue = newValue;
-                      });
-                    },
-                    items: RepeatUnit.values.map((RepeatUnit unit) {
-                      return DropdownMenuItem<RepeatUnit>(
-                        value: unit,
-                        child: Text(unit.toString().split('.').last),
-                      );
-                    }).toList(),
-                  )
-                ),
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: DropdownButton(
+                      value: _currentRepeat,
+                      onChanged: (RepeatUnit newValue) {
+                        setState(() {
+                          _currentRepeat = newValue;
+                        });
+                      },
+                      items: RepeatUnit.values.map((RepeatUnit unit) {
+                        return DropdownMenuItem<RepeatUnit>(
+                          value: unit,
+                          child: Text(unit.toString().split('.').last),
+                        );
+                      }).toList(),
+                    )),
               ],
             ),
           ),
-          //TODO: Question and answer
+          Container(
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: _questionController,
+                    focusNode: _questionFocus,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Question',
+                    ),
+                  ),
+                ),
+                Container(
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: DropdownButton(
+                      value: _currentAnswer,
+                      onChanged: (AnswerType newValue) {
+                        setState(() {
+                          _currentAnswer = newValue;
+                        });
+                      },
+                      items: AnswerType.values.map((AnswerType type) {
+                        return DropdownMenuItem<AnswerType>(
+                          value: type,
+                          child: Text(printAnswerType(type)),
+                        );
+                      }).toList(),
+                    )),
+              ],
+            ),
+          ),
           Container(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
             child: DateTimeField(
@@ -68,40 +122,44 @@ class _NewNagState extends State<NewNagScreen> {
                 border: OutlineInputBorder(),
                 labelText: 'Start',
               ),
+              initialValue: _currentStart,
               onShowPicker: (context, currentValue) async {
                 var date = await showDatePicker(
                     context: context,
                     initialDate: currentValue ?? DateTime.now(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2200));
-                var time = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()));
+                if(date != null) {
+                  var time = await showTimePicker(
+                      context: context,
+                      initialTime:
+                      TimeOfDay.fromDateTime(currentValue ?? DateTime.now()));
 
-                return DateTimeField.combine(date, time);
+                  return DateTimeField.combine(date, time);
+                }
+                return currentValue;
+              },
+              onChanged: (date) {
+                setState(() {
+                  _currentStart = date;
+                });
               },
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-            child: FlatButton(
-              color: Colors.grey[300],
-              child: Text('Create'),
-              onPressed: () {
-                Navigator.pop(context, new Nag(
-                    name: 'Nag 1',
-                    repeatAmount: 5,
-                    repeatUnit: RepeatUnit.minutes,
-                    start: DateTime.now(),
-                    question: 'How are you doing?',
-                    answerType: AnswerType.text,
-                ));
-              },
-            )
-          ),
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: FlatButton(
+                color: Colors.grey[300],
+                child: Text('Create'),
+                onPressed: () {
+                  Navigator.pop(
+                      context,
+                      new Nag(_titleController.text, int.parse(_repeatController.text), _currentRepeat,
+                        _currentStart, _questionController.text, _currentAnswer,));
+                },
+              )),
         ],
       ),
     );
   }
-
 }
