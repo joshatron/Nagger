@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 import 'nag.dart';
 import 'new_edit_nag.dart';
@@ -48,7 +47,7 @@ class _NagsPageState extends State<NagsPage> {
     Scaffold
         .of(context)
         .showSnackBar(SnackBar(
-      content: Text(_lastDeleted.name + ' deleted'),
+      content: Text(_lastDeleted.title + ' deleted'),
       action: SnackBarAction(
         label: 'Undo',
         onPressed: () {
@@ -63,7 +62,7 @@ class _NagsPageState extends State<NagsPage> {
 
   Widget _buildNagWidget(BuildContext context, int index) {
     return Dismissible(
-      key: Key(_nags[index].name + ' ' + Uuid().v4()),
+      key: UniqueKey(),
       onDismissed: (direction) {
         if(direction == DismissDirection.startToEnd) {
           _removeNag(context, index);

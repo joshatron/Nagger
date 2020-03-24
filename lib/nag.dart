@@ -25,7 +25,7 @@ class _NagWidgetState extends State<NagWidget> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: <Widget>[
-          Expanded(child: Text(widget.nag.name)),
+          Expanded(child: Text(widget.nag.title)),
           Text(printRepeat(widget.nag.repeatAmount, widget.nag.repeatUnit)),
         ],
       ),
@@ -35,7 +35,7 @@ class _NagWidgetState extends State<NagWidget> {
   Widget buildExpanded() {
     return Container(
       height: 200,
-      child: Center(child: Text(widget.nag.name)),
+      child: Center(child: Text(widget.nag.title)),
     );
   }
 
@@ -49,7 +49,7 @@ class _NagWidgetState extends State<NagWidget> {
 }
 
 class Nag {
-  String name;
+  String title;
   int repeatAmount;
   RepeatUnit repeatUnit;
   DateTime start;
@@ -57,7 +57,7 @@ class Nag {
   AnswerType answerType;
   bool active;
 
-  Nag(this.name, this.repeatAmount, this.repeatUnit, this.start, this.question, this.answerType, {this.active = true});
+  Nag(this.title, this.repeatAmount, this.repeatUnit, this.start, this.question, this.answerType, {this.active = true});
 }
 
 enum RepeatUnit {
