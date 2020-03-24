@@ -37,57 +37,63 @@ class _NagsPageState extends State<NagsPage> {
     });
   }
 
+  void _removeNag(BuildContext context, int index) {
+    setState(() {
+      Scaffold.of(context).hideCurrentSnackBar();
+      _lastDeleted = _nags[index];
+      _lastDeletedIndex = index;
+      _nags.removeAt(index);
+    });
+
+    Scaffold
+        .of(context)
+        .showSnackBar(SnackBar(
+      content: Text(_lastDeleted.name + ' deleted'),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          setState(() {
+            _nags.insert(_lastDeletedIndex, _lastDeleted);
+            Scaffold.of(context).hideCurrentSnackBar();
+          });
+        },
+      ),
+    ));
+  }
+
+  Widget _buildNagWidget(BuildContext context, int index) {
+    return Dismissible(
+      key: Key(_nags[index].name + ' ' + Uuid().v4()),
+      onDismissed: (direction) {
+        if(direction == DismissDirection.startToEnd) {
+          _removeNag(context, index);
+        }
+        else {
+          _editNag(context, index);
+        }
+      },
+      background: Container(
+        alignment: AlignmentDirectional.centerStart,
+        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+        color: Colors.red,
+        child: Icon(Icons.delete),
+      ),
+      secondaryBackground: Container(
+          alignment: AlignmentDirectional.centerEnd,
+          padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+          color: Colors.grey,
+          child: Icon(Icons.edit)
+      ),
+      child: NagWidget(nag: _nags[index]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Nags')),
       body: ListView.separated(
-        itemBuilder: (BuildContext context, int index) {
-          return Dismissible(
-            key: Key(_nags[index].name + ' ' + Uuid().v4()),
-            onDismissed: (direction) {
-              if(direction == DismissDirection.startToEnd) {
-                setState(() {
-                  Scaffold.of(context).hideCurrentSnackBar();
-                  _lastDeleted = _nags[index];
-                  _lastDeletedIndex = index;
-                  _nags.removeAt(index);
-                });
-
-                Scaffold
-                    .of(context)
-                    .showSnackBar(SnackBar(
-                  content: Text(_lastDeleted.name + ' deleted'),
-                  action: SnackBarAction(
-                    label: 'Undo',
-                    onPressed: () {
-                      setState(() {
-                        _nags.insert(_lastDeletedIndex, _lastDeleted);
-                        Scaffold.of(context).hideCurrentSnackBar();
-                      });
-                    },
-                  ),
-                ));
-              }
-              else {
-                _editNag(context, index);
-              }
-            },
-            background: Container(
-              alignment: AlignmentDirectional.centerStart, 
-              padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-              color: Colors.red, 
-              child: Icon(Icons.delete),
-            ),
-            secondaryBackground: Container(
-                alignment: AlignmentDirectional.centerEnd,
-                padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                color: Colors.grey,
-                child: Icon(Icons.edit)
-            ),
-            child: NagWidget(nag: _nags[index]),
-          );
-        },
+        itemBuilder: (context, index) => _buildNagWidget(context, index),
         separatorBuilder: (BuildContext context, int index) => Divider(),
         itemCount: _nags.length,
       ),
