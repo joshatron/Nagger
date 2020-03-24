@@ -4,22 +4,51 @@ import 'package:nagger/nag.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 
-class NewNagScreen extends StatefulWidget {
+class NewEditNagScreen extends StatefulWidget {
+  final Nag nag;
+
+  NewEditNagScreen({Key key, this.nag}) : super(key: key);
+
   @override
-  _NewNagState createState() => _NewNagState();
+  _NewEditNagState createState() => _NewEditNagState();
 }
 
-class _NewNagState extends State<NewNagScreen> {
-  RepeatUnit _currentRepeat = RepeatUnit.minutes;
-  AnswerType _currentAnswer = AnswerType.confirmation;
-  DateTime _currentStart = DateTime.now();
+class _NewEditNagState extends State<NewEditNagScreen> {
+  TextEditingController _titleController;
+  TextEditingController _repeatController;
+  TextEditingController _questionController;
+  FocusNode _titleFocus;
+  FocusNode _repeatFocus;
+  FocusNode _questionFocus;
 
-  final _titleController = TextEditingController();
-  final _repeatController = TextEditingController();
-  final _questionController = TextEditingController();
-  final _titleFocus = FocusNode();
-  final _repeatFocus = FocusNode();
-  final _questionFocus = FocusNode();
+  RepeatUnit _currentRepeat;
+  AnswerType _currentAnswer;
+  DateTime _currentStart;
+
+  initialize() {
+    if(widget.nag == null) {
+      _titleController = TextEditingController();
+      _repeatController = TextEditingController();
+      _questionController = TextEditingController();
+      _titleFocus = FocusNode();
+      _repeatFocus = FocusNode();
+      _questionFocus = FocusNode();
+      _currentRepeat = RepeatUnit.minutes;
+      _currentAnswer = AnswerType.confirmation;
+      _currentStart = DateTime.now();
+    }
+    else {
+      _titleController = TextEditingController(text: widget.nag.name);
+      _repeatController = TextEditingController(text: widget.nag.repeatAmount.toString());
+      _questionController = TextEditingController(text: widget.nag.question);
+      _titleFocus = FocusNode();
+      _repeatFocus = FocusNode();
+      _questionFocus = FocusNode();
+      _currentRepeat = widget.nag.repeatUnit;
+      _currentAnswer = widget.nag.answerType;
+      _currentStart = widget.nag.start;
+    }
+  }
 
   _fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
     currentFocus.unfocus();
@@ -28,6 +57,7 @@ class _NewNagState extends State<NewNagScreen> {
 
   @override
   Widget build(BuildContext context) {
+    initialize();
     return Scaffold(
       appBar: AppBar(title: Text('New Nag')),
       body: Column(
@@ -150,7 +180,7 @@ class _NewNagState extends State<NewNagScreen> {
               padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: FlatButton(
                 color: Colors.grey[300],
-                child: Text('Create'),
+                child: Text(widget.nag == null ? 'Create' : 'Save'),
                 onPressed: () {
                   Navigator.pop(
                       context,
