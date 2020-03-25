@@ -15,49 +15,20 @@ class _NagsPageState extends State<NagsPage> {
   Nag _lastDeleted;
   int _lastDeletedIndex;
 
-  void _addNag(BuildContext context) async {
-    var newNag = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewEditNagScreen()));
-
-    if(newNag != null) {
-      setState(() {
-        _nags.add(newNag);
-      });
-    }
-  }
-
-  void _editNag(BuildContext context, int index) async {
-    var editedNag = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewEditNagScreen(nag: _nags[index])));
-
-    setState(() {
-      if(editedNag != null) {
-        _nags.removeAt(index);
-        _nags.insert(index, editedNag);
-      }
-    });
-  }
-
-  void _removeNag(BuildContext context, int index) {
-    setState(() {
-      Scaffold.of(context).hideCurrentSnackBar();
-      _lastDeleted = _nags[index];
-      _lastDeletedIndex = index;
-      _nags.removeAt(index);
-    });
-
-    Scaffold
-        .of(context)
-        .showSnackBar(SnackBar(
-      content: Text(_lastDeleted.title + ' deleted'),
-      action: SnackBarAction(
-        label: 'Undo',
-        onPressed: () {
-          setState(() {
-            _nags.insert(_lastDeletedIndex, _lastDeleted);
-            Scaffold.of(context).hideCurrentSnackBar();
-          });
-        },
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Nags')),
+      body: ListView.separated(
+        itemBuilder: (context, index) => _buildNagWidget(context, index),
+        separatorBuilder: (BuildContext context, int index) => Divider(),
+        itemCount: _nags.length,
       ),
-    ));
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {_addNag(context);},
+      ),
+    );
   }
 
   Widget _buildNagWidget(BuildContext context, int index) {
@@ -87,19 +58,47 @@ class _NagsPageState extends State<NagsPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Nags')),
-      body: ListView.separated(
-        itemBuilder: (context, index) => _buildNagWidget(context, index),
-        separatorBuilder: (BuildContext context, int index) => Divider(),
-        itemCount: _nags.length,
+  void _addNag(BuildContext context) async {
+    var newNag = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewEditNagScreen()));
+
+    if(newNag != null) {
+      setState(() {
+        _nags.add(newNag);
+      });
+    }
+  }
+
+  void _editNag(BuildContext context, int index) async {
+    var editedNag = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewEditNagScreen(nag: _nags[index])));
+
+    setState(() {
+      if(editedNag != null) {
+        _nags[index] = editedNag;
+      }
+    });
+  }
+
+  void _removeNag(BuildContext context, int index) {
+    setState(() {
+      Scaffold.of(context).hideCurrentSnackBar();
+      _lastDeleted = _nags[index];
+      _lastDeletedIndex = index;
+      _nags.removeAt(index);
+    });
+
+    Scaffold
+        .of(context)
+        .showSnackBar(SnackBar(
+      content: Text(_lastDeleted.title + ' deleted'),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          setState(() {
+            _nags.insert(_lastDeletedIndex, _lastDeleted);
+            Scaffold.of(context).hideCurrentSnackBar();
+          });
+        },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {_addNag(context);},
-      ),
-    );
+    ));
   }
 }

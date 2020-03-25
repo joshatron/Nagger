@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NagWidget extends StatefulWidget {
   final Nag nag;
@@ -12,6 +13,14 @@ class NagWidget extends StatefulWidget {
 
 class _NagWidgetState extends State<NagWidget> {
   bool _collapsed = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: toggleCollapsed,
+      child: _collapsed ? buildCollapsed() : buildExpanded(),
+    );
+  }
 
   void toggleCollapsed() {
     setState(() {
@@ -34,16 +43,25 @@ class _NagWidgetState extends State<NagWidget> {
 
   Widget buildExpanded() {
     return Container(
-      height: 200,
-      child: Center(child: Text(widget.nag.title)),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: toggleCollapsed,
-      child: _collapsed ? buildCollapsed() : buildExpanded(),
+      height: 110,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          buildCollapsed(),
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Text('Question: ' + widget.nag.question),
+          ),
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Text('Answer Type: ' + printAnswerType(widget.nag.answerType)),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Text('Starting ' + DateFormat().add_yMd().add_jm().format(widget.nag.start)),
+          ),
+        ],
+      )
     );
   }
 }

@@ -27,6 +27,26 @@ class _NewEditNagState extends State<NewEditNagScreen> {
 
   bool _initialized = false;
 
+  @override
+  Widget build(BuildContext context) {
+    if(!_initialized) {
+      initialize();
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: Text('New Nag')),
+      body: Column(
+        children: <Widget>[
+          _titleInput(context),
+          _repeatInput(context),
+          _questionInput(context),
+          _startInput(context),
+          _finishButton(context),
+        ],
+      ),
+    );
+  }
+
   initialize() {
     if(widget.nag == null) {
       _titleController = TextEditingController();
@@ -199,26 +219,6 @@ class _NewEditNagState extends State<NewEditNagScreen> {
                   _currentStart, _questionController.text, _currentAnswer,));
           },
         )
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if(!_initialized) {
-      initialize();
-    }
-
-    return Scaffold(
-      appBar: AppBar(title: Text('New Nag')),
-      body: Column(
-        children: <Widget>[
-          _titleInput(context),
-          _repeatInput(context),
-          _questionInput(context),
-          _startInput(context),
-          _finishButton(context),
-        ],
-      ),
     );
   }
 }
