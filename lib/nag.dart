@@ -17,18 +17,18 @@ class _NagWidgetState extends State<NagWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: toggleCollapsed,
-      child: _collapsed ? buildCollapsed() : buildExpanded(),
+      onTap: _toggleCollapsed,
+      child: _collapsed ? _buildCollapsed() : _buildExpanded(),
     );
   }
 
-  void toggleCollapsed() {
+  void _toggleCollapsed() {
     setState(() {
       _collapsed = !_collapsed;
     });
   }
 
-  Widget buildCollapsed() {
+  Widget _buildCollapsed() {
     return Container(
       height: 50,
       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -36,18 +36,25 @@ class _NagWidgetState extends State<NagWidget> {
         children: <Widget>[
           Expanded(child: Text(widget.nag.title)),
           Text(printRepeat(widget.nag.repeatAmount, widget.nag.repeatUnit)),
+          Switch(value: widget.nag.active, onChanged: _setActive,),
         ],
       ),
     );
   }
 
-  Widget buildExpanded() {
+  void _setActive(bool newValue) {
+    setState(() {
+      widget.nag.active = newValue;
+    });
+  }
+
+  Widget _buildExpanded() {
     return Container(
       height: 110,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          buildCollapsed(),
+          _buildCollapsed(),
           Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text('Question: ' + widget.nag.question),
