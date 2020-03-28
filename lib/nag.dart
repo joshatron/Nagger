@@ -83,6 +83,36 @@ class Nag {
   bool active;
 
   Nag(this.title, this.repeatAmount, this.repeatUnit, this.start, this.question, this.answerType, {this.active = true});
+
+  DateTime nextNag(DateTime current) {
+    DateTime temp = start;
+    while(temp.isBefore(current)) {
+      temp = _increment(temp);
+    }
+
+    return temp;
+  }
+
+  DateTime _increment(DateTime time) {
+    switch(repeatUnit) {
+      case RepeatUnit.seconds:
+          return time.add(Duration(seconds: repeatAmount));
+      case RepeatUnit.minutes:
+        return time.add(Duration(minutes: repeatAmount));
+      case RepeatUnit.hours:
+        return time.add(Duration(hours: repeatAmount));
+      case RepeatUnit.days:
+        return time.add(Duration(days: repeatAmount));
+      case RepeatUnit.weeks:
+        return time.add(Duration(days: (repeatAmount * 7)));
+      case RepeatUnit.months:
+        return time.add(Duration(days: (repeatAmount * 30)));
+      case RepeatUnit.years:
+        return time.add(Duration(days: (repeatAmount * 365)));
+    }
+
+    return time;
+  }
 }
 
 enum RepeatUnit {
