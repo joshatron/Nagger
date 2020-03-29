@@ -50,7 +50,7 @@ class _NagWidgetState extends State<NagWidget> {
 
   Widget _buildExpanded() {
     return Container(
-      height: 110,
+      height: 130,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -65,7 +65,11 @@ class _NagWidgetState extends State<NagWidget> {
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text('Starting ' + DateFormat().add_yMd().add_jm().format(widget.nag.start)),
+              child: Text('Beginning: ' + DateFormat().add_yMd().add_jm().format(widget.nag.start)),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text('Next: ' + DateFormat().add_yMd().add_jm().format(widget.nag.nextNag())),
           ),
         ],
       )
@@ -84,7 +88,10 @@ class Nag {
 
   Nag(this.title, this.repeatAmount, this.repeatUnit, this.start, this.question, this.answerType, {this.active = true});
 
-  DateTime nextNag(DateTime current) {
+  DateTime nextNag({DateTime current}) {
+    if(current == null) {
+      current = DateTime.now();
+    }
     DateTime temp = start;
     while(temp.isBefore(current)) {
       temp = _increment(temp);
