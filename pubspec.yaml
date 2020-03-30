@@ -19,6 +19,8 @@ environment:
 dependencies:
   uuid: ^2.0.4
   datetime_picker_formfield: ^1.0.0
+  jiffy: ^3.0.1
+
   flutter:
     sdk: flutter
 

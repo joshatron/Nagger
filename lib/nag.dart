@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 
 class NagWidget extends StatefulWidget {
   final Nag nag;
@@ -111,11 +112,11 @@ class Nag {
       case RepeatUnit.days:
         return time.add(Duration(days: repeatAmount));
       case RepeatUnit.weeks:
-        return time.add(Duration(days: (repeatAmount * 7)));
+        return Jiffy(time).add(weeks: repeatAmount);
       case RepeatUnit.months:
-        return time.add(Duration(days: (repeatAmount * 30)));
+        return Jiffy(time).add(months: repeatAmount);
       case RepeatUnit.years:
-        return time.add(Duration(days: (repeatAmount * 365)));
+        return Jiffy(time).add(years: repeatAmount);
     }
 
     return time;
