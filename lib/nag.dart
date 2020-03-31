@@ -83,43 +83,48 @@ class Nag {
   int repeatAmount;
   RepeatUnit repeatUnit;
   DateTime start;
+  DateTime _next;
   String question;
   AnswerType answerType;
   bool active;
 
-  Nag(this.title, this.repeatAmount, this.repeatUnit, this.start, this.question, this.answerType, {this.active = true});
-
-  DateTime nextNag({DateTime current}) {
-    if(current == null) {
-      current = DateTime.now();
-    }
-    DateTime temp = start;
-    while(temp.isBefore(current)) {
-      temp = _increment(temp);
-    }
-
-    return temp;
+  Nag(this.title, this.repeatAmount, this.repeatUnit, this.start, this.question, this.answerType, {this.active = true}) {
+    _next = start;
   }
 
-  DateTime _increment(DateTime time) {
-    switch(repeatUnit) {
-      case RepeatUnit.seconds:
-          return time.add(Duration(seconds: repeatAmount));
-      case RepeatUnit.minutes:
-        return time.add(Duration(minutes: repeatAmount));
-      case RepeatUnit.hours:
-        return time.add(Duration(hours: repeatAmount));
-      case RepeatUnit.days:
-        return time.add(Duration(days: repeatAmount));
-      case RepeatUnit.weeks:
-        return Jiffy(time).add(weeks: repeatAmount);
-      case RepeatUnit.months:
-        return Jiffy(time).add(months: repeatAmount);
-      case RepeatUnit.years:
-        return Jiffy(time).add(years: repeatAmount);
+  DateTime nextNag() {
+    var current = DateTime.now();
+    while(_next.isBefore(current)) {
+      _incrementNext();
     }
 
-    return time;
+    return _next;
+  }
+
+  void _incrementNext() {
+    switch(repeatUnit) {
+      case RepeatUnit.seconds:
+          _next = Jiffy(_next).add(seconds: repeatAmount);
+          break;
+      case RepeatUnit.minutes:
+        _next = Jiffy(_next).add(minutes: repeatAmount);
+        break;
+      case RepeatUnit.hours:
+        _next = Jiffy(_next).add(hours: repeatAmount);
+        break;
+      case RepeatUnit.days:
+        _next = Jiffy(_next).add(days: repeatAmount);
+        break;
+      case RepeatUnit.weeks:
+        _next = Jiffy(_next).add(weeks: repeatAmount);
+        break;
+      case RepeatUnit.months:
+        _next = Jiffy(_next).add(months: repeatAmount);
+        break;
+      case RepeatUnit.years:
+        _next = Jiffy(_next).add(years: repeatAmount);
+        break;
+    }
   }
 }
 
