@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:uuid/uuid.dart';
 
 class NagWidget extends StatefulWidget {
   final Nag nag;
@@ -79,6 +80,7 @@ class _NagWidgetState extends State<NagWidget> {
 }
 
 class Nag {
+  String id;
   String title;
   int repeatAmount;
   RepeatUnit repeatUnit;
@@ -88,7 +90,10 @@ class Nag {
   AnswerType answerType;
   bool active;
 
-  Nag(this.title, this.repeatAmount, this.repeatUnit, this.start, this.question, this.answerType, {this.active = true}) {
+  Nag(this.title, this.repeatAmount, this.repeatUnit, this.start, this.question, this.answerType, {this.id, this.active = true}) {
+    if(id == null) {
+      id = Uuid().v4();
+    }
     _next = start;
   }
 

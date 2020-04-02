@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:uuid/uuid.dart';
 
 import 'nag.dart';
 import 'new_edit_nag.dart';
@@ -100,5 +103,53 @@ class _NagsPageState extends State<NagsPage> {
         },
       ),
     ));
+  }
+}
+
+abstract class Nags {
+  List<Nag> getNags();
+  void addNag();
+  void deleteNag(String nagId);
+  void updateNag(String nagId, Nag newNag);
+}
+
+class DatabaseNags implements Nags {
+  Future<Database> _database;
+
+  DatabaseNags() {
+    _init();
+  }
+  
+  void _init() async {
+    _database = openDatabase(
+      join(await getDatabasesPath(), 'nagger.db'),
+      onCreate: (db, version) {
+        return db.execute(
+          "CREATE TABLE nags(id TEXT PRIMARY KEY, title TEXT, repeatAmount INTEGER, repeatUnit INTEGER, start INTEGER, question TEXT, answerType INTEGER, active INTEGER)"
+        );
+      },
+      version: 1,
+    );
+  }
+
+  @override
+  void addNag() {
+    // TODO: implement addNag
+  }
+
+  @override
+  void deleteNag(String nagId) {
+    // TODO: implement deleteNag
+  }
+
+  @override
+  List<Nag> getNags() {
+    // TODO: implement getNags
+    throw UnimplementedError();
+  }
+
+  @override
+  void updateNag(String nagId, Nag newNag) {
+    // TODO: implement updateNag
   }
 }
