@@ -131,6 +131,19 @@ class Nag {
         break;
     }
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'repeatAmount': repeatAmount,
+      'repeatUnit': repeatUnit.index,
+      'start': start.millisecondsSinceEpoch,
+      'question': question,
+      'answerType': answerType.index,
+      'active': active ? 1 : 0,
+    };
+  }
 }
 
 enum RepeatUnit {

@@ -108,7 +108,7 @@ class _NagsPageState extends State<NagsPage> {
 
 abstract class Nags {
   List<Nag> getNags();
-  void addNag();
+  void addNag(Nag nag);
   void deleteNag(String nagId);
   void updateNag(String nagId, Nag newNag);
 }
@@ -133,8 +133,9 @@ class DatabaseNags implements Nags {
   }
 
   @override
-  void addNag() {
-    // TODO: implement addNag
+  void addNag(Nag nag) async {
+    Database db = await _database;
+    await db.insert('nags', nag.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override
