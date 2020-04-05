@@ -107,7 +107,7 @@ class _NagsPageState extends State<NagsPage> {
 }
 
 abstract class Nags {
-  List<Nag> getNags();
+  Future<List<Nag>> getNags();
   void addNag(Nag nag);
   void deleteNag(String nagId);
   void updateNag(String nagId, Nag newNag);
@@ -144,9 +144,21 @@ class DatabaseNags implements Nags {
   }
 
   @override
-  List<Nag> getNags() {
-    // TODO: implement getNags
-    throw UnimplementedError();
+  Future<List<Nag>> getNags() async {
+    Database db = await _database;
+    List<Map<String,dynamic>> maps = await db.query('dogs');
+    
+    return List.generate(maps.length,
+            (i) => Nag(
+              maps[i]['title'],
+              maps[i]['repeatAmount'],
+              RepeatUnit.values[maps[i]['repeatUnit']],
+              DateTime.fromMillisecondsSinceEpoch(maps[i]['start']),
+              maps[i]['question'],
+              AnswerType.values[maps[i]['answerType']],
+              id: maps[i]['id'],
+              active: maps[i]['active'] == 1 ? true : false,
+            ));
   }
 
   @override
