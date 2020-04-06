@@ -110,7 +110,7 @@ abstract class Nags {
   Future<List<Nag>> getNags();
   void addNag(Nag nag);
   void deleteNag(String nagId);
-  void updateNag(String nagId, Nag newNag);
+  void updateNag(Nag newNag);
 }
 
 class DatabaseNags implements Nags {
@@ -162,7 +162,8 @@ class DatabaseNags implements Nags {
   }
 
   @override
-  void updateNag(String nagId, Nag newNag) {
-    // TODO: implement updateNag
+  void updateNag(Nag newNag) async {
+    Database db = await _database;
+    await db.update('nags', newNag.toMap(), where: 'id = ?', whereArgs: [newNag.id]);
   }
 }
