@@ -139,8 +139,9 @@ class DatabaseNags implements Nags {
   }
 
   @override
-  void deleteNag(String nagId) {
-    // TODO: implement deleteNag
+  void deleteNag(String nagId) async {
+    Database db = await _database;
+    await db.delete('nags', where: 'id = ?', whereArgs: [nagId]);
   }
 
   @override
