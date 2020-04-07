@@ -14,9 +14,19 @@ class NagsPage extends StatefulWidget {
 }
 
 class _NagsPageState extends State<NagsPage> {
-  List<Nag> _nags = List<Nag>();
+  List<Nag> _nags;
   Nag _lastDeleted;
   int _lastDeletedIndex;
+  Nags nagsStore;
+
+  _NagsPageState() {
+    nagsStore = DatabaseNags();
+    _initializeNags();
+  }
+
+  _initializeNags() async {
+    _nags = await nagsStore.getNags();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +74,8 @@ class _NagsPageState extends State<NagsPage> {
   void _addNag(BuildContext context) async {
     var newNag = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewEditNagScreen()));
 
+    nagsStore.addNag(newNag);
+
     if(newNag != null) {
       setState(() {
         _nags.add(newNag);
@@ -74,6 +86,8 @@ class _NagsPageState extends State<NagsPage> {
   void _editNag(BuildContext context, int index) async {
     var editedNag = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewEditNagScreen(nag: _nags[index])));
 
+    nagsStore.updateNag(editedNag);
+
     setState(() {
       if(editedNag != null) {
         _nags[index] = editedNag;
@@ -82,6 +96,8 @@ class _NagsPageState extends State<NagsPage> {
   }
 
   void _removeNag(BuildContext context, int index) {
+    nagsStore.deleteNag(_nags[index].id);
+
     setState(() {
       Scaffold.of(context).hideCurrentSnackBar();
       _lastDeleted = _nags[index];
