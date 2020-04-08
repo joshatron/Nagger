@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -14,7 +16,7 @@ class NagsPage extends StatefulWidget {
 }
 
 class _NagsPageState extends State<NagsPage> {
-  List<Nag> _nags;
+  List<Nag> _nags = List();
   Nag _lastDeleted;
   int _lastDeletedIndex;
   Nags nagsStore;
@@ -134,9 +136,10 @@ class DatabaseNags implements Nags {
 
   DatabaseNags() {
     _init();
+    sleep(Duration(milliseconds: 5000));
   }
   
-  void _init() async {
+  Future<void> _init() async {
     _database = openDatabase(
       join(await getDatabasesPath(), 'nagger.db'),
       onCreate: (db, version) {
@@ -149,13 +152,13 @@ class DatabaseNags implements Nags {
   }
 
   @override
-  void addNag(Nag nag) async {
+  Future<void> addNag(Nag nag) async {
     Database db = await _database;
     await db.insert('nags', nag.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override
-  void deleteNag(String nagId) async {
+  Future<void> deleteNag(String nagId) async {
     Database db = await _database;
     await db.delete('nags', where: 'id = ?', whereArgs: [nagId]);
   }
@@ -163,7 +166,7 @@ class DatabaseNags implements Nags {
   @override
   Future<List<Nag>> getNags() async {
     Database db = await _database;
-    List<Map<String,dynamic>> maps = await db.query('dogs');
+    List<Map<String,dynamic>> maps = await db.query('nags');
     
     return List.generate(maps.length,
             (i) => Nag(
@@ -179,7 +182,7 @@ class DatabaseNags implements Nags {
   }
 
   @override
-  void updateNag(Nag newNag) async {
+  Future<void> updateNag(Nag newNag) async {
     Database db = await _database;
     await db.update('nags', newNag.toMap(), where: 'id = ?', whereArgs: [newNag.id]);
   }
