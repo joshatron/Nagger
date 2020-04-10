@@ -19,10 +19,10 @@ class _NagsPageState extends State<NagsPage> {
   List<Nag> _nags = List();
   Nag _lastDeleted;
   int _lastDeletedIndex;
-  Nags nagsStore;
+  NagStore nagsStore;
 
   _NagsPageState() {
-    nagsStore = DatabaseNags();
+    nagsStore = DatabaseNagStore();
     _initializeNags();
   }
 
@@ -124,19 +124,18 @@ class _NagsPageState extends State<NagsPage> {
   }
 }
 
-abstract class Nags {
+abstract class NagStore {
   Future<List<Nag>> getNags();
   void addNag(Nag nag);
   void deleteNag(String nagId);
   void updateNag(Nag newNag);
 }
 
-class DatabaseNags implements Nags {
+class DatabaseNagStore implements NagStore {
   Future<Database> _database;
 
-  DatabaseNags() {
+  DatabaseNagStore() {
     _init();
-    sleep(Duration(milliseconds: 5000));
   }
   
   Future<void> _init() async {

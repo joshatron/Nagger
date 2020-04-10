@@ -48,7 +48,7 @@ class _NewEditNagState extends State<NewEditNagScreen> {
   }
 
   initialize() {
-    if(widget.nag == null) {
+    if(_newNag()) {
       _titleController = TextEditingController();
       _repeatController = TextEditingController();
       _questionController = TextEditingController();
@@ -72,6 +72,10 @@ class _NewEditNagState extends State<NewEditNagScreen> {
     }
 
     _initialized = true;
+  }
+
+  bool _newNag() {
+    return widget.nag == null;
   }
 
   _fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
@@ -211,7 +215,7 @@ class _NewEditNagState extends State<NewEditNagScreen> {
         padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
         child: FlatButton(
           color: Colors.grey[300],
-          child: Text(widget.nag == null ? 'Create' : 'Save'),
+          child: Text(_newNag() ? 'Create' : 'Save'),
           onPressed: () {
             Navigator.pop(
                 context,
