@@ -23,15 +23,22 @@ class _NagsPageState extends State<NagsPage> {
 
   _NagsPageState() {
     nagsStore = DatabaseNagStore();
-    _initializeNags();
   }
 
   _initializeNags() async {
-    _nags = await nagsStore.getNags();
+    List<Nag> nags = await nagsStore.getNags();
+
+    setState(() {
+      _nags = nags;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if(_nags.isEmpty) {
+      _initializeNags();
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text('Nags')),
       body: ListView.separated(
@@ -134,12 +141,16 @@ abstract class NagStore {
 class DatabaseNagStore implements NagStore {
   Future<Database> _database;
 
-  DatabaseNagStore() {
-    _init();
+  Future<Database> _getDatabase() async {
+    if(_database == null) {
+      _database = _initDb();
+    }
+
+    return _database;
   }
-  
-  Future<void> _init() async {
-    _database = openDatabase(
+
+  Future<Database> _initDb() async {
+    return openDatabase(
       join(await getDatabasesPath(), 'nagger.db'),
       onCreate: (db, version) {
         return db.execute(
@@ -152,19 +163,19 @@ class DatabaseNagStore implements NagStore {
 
   @override
   Future<void> addNag(Nag nag) async {
-    Database db = await _database;
+    Database db = await _getDatabase();
     await db.insert('nags', nag.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override
   Future<void> deleteNag(String nagId) async {
-    Database db = await _database;
+    Database db = await _getDatabase();
     await db.delete('nags', where: 'id = ?', whereArgs: [nagId]);
   }
 
   @override
   Future<List<Nag>> getNags() async {
-    Database db = await _database;
+    Database db = await _getDatabase();
     List<Map<String,dynamic>> maps = await db.query('nags');
     
     return List.generate(maps.length,
@@ -182,7 +193,7 @@ class DatabaseNagStore implements NagStore {
 
   @override
   Future<void> updateNag(Nag newNag) async {
-    Database db = await _database;
+    Database db = await _getDatabase();
     await db.update('nags', newNag.toMap(), where: 'id = ?', whereArgs: [newNag.id]);
   }
 }
