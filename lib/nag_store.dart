@@ -73,3 +73,28 @@ class DatabaseNagStore implements NagStore {
     await db.update('nags', newNag.toMap(), where: 'id = ?', whereArgs: [newNag.id]);
   }
 }
+
+class MockStore implements NagStore {
+  List<Nag> nags = List();
+
+  @override
+  void addNag(Nag nag) {
+    nags.add(nag);
+  }
+
+  @override
+  void deleteNag(String nagId) {
+    // TODO: implement deleteNag
+  }
+
+  @override
+  Future<List<Nag>> getNags() {
+    // TODO: implement getNags
+    throw UnimplementedError();
+  }
+
+  @override
+  void updateNag(Nag nag) {
+    // TODO: implement updateNag
+  }
+}
