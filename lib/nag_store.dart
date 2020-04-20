@@ -75,7 +75,15 @@ class DatabaseNagStore implements NagStore {
 }
 
 class MockStore implements NagStore {
-  List<Nag> nags = List();
+  List<Nag> nags;
+
+  MockStore() {
+    nags = List();
+
+    nags.add(new Nag("First", 10, RepeatUnit.hours, DateTime.now(), "How are you?", AnswerType.text));
+    nags.add(new Nag("Second", 1, RepeatUnit.days, DateTime.now().subtract(Duration(days: 1, minutes: 1)), "Don't forget the thing", AnswerType.confirmation));
+    nags.add(new Nag("Third", 1234567, RepeatUnit.seconds, DateTime.now().add(Duration(seconds: 30)), "How is your pain level?", AnswerType.scale10));
+  }
 
   @override
   void addNag(Nag nag) {
