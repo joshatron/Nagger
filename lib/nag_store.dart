@@ -84,17 +84,16 @@ class MockStore implements NagStore {
 
   @override
   void deleteNag(String nagId) {
-    // TODO: implement deleteNag
+    nags.removeAt(nags.indexWhere((element) => element.id == nagId));
   }
 
   @override
   Future<List<Nag>> getNags() {
-    // TODO: implement getNags
-    throw UnimplementedError();
+    return new Future<List<Nag>>.value(nags);
   }
 
   @override
   void updateNag(Nag nag) {
-    // TODO: implement updateNag
+    nags.insert(nags.indexWhere((element) => element.id == nag.id), nag);
   }
 }
