@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'nag.dart';
+
 class NagQuestionPage extends StatefulWidget {
-  NagQuestionPage({Key key}) : super(key: key);
+  Nag nag;
+
+  NagQuestionPage(this.nag, {Key key}) : super(key: key);
 
   @override
   _NagQuestionState createState() => _NagQuestionState();
@@ -10,7 +14,13 @@ class NagQuestionPage extends StatefulWidget {
 class _NagQuestionState extends State<NagQuestionPage> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.nag.title)),
+      body: _buildConfirmation(context),
+    );
+  }
+
+  Widget _buildConfirmation(BuildContext context) {
+
   }
 }
