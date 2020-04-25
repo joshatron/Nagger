@@ -16,11 +16,39 @@ class _NagQuestionState extends State<NagQuestionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.nag.title)),
-      body: _buildConfirmation(context),
+      body: _buildQuestion(context),
     );
   }
 
-  Widget _buildConfirmation(BuildContext context) {
+  Widget _buildQuestion(BuildContext context) {
+    switch(widget.nag.answerType) {
+      case AnswerType.confirmation:
+        return _buildConfirmation(context);
+      case AnswerType.yesno:
+        return _buildYesNo(context);
+      case AnswerType.text:
+        return _buildText(context);
+      case AnswerType.scale5:
+        return _buildScale5(context);
+      case AnswerType.scale10:
+        return _buildScale10(context);
+    }
 
+    return Center();
+  }
+
+  Widget _buildConfirmation(BuildContext context) {
+  }
+
+  Widget _buildYesNo(BuildContext context) {
+  }
+
+  Widget _buildText(BuildContext context) {
+  }
+
+  Widget _buildScale5(BuildContext context) {
+  }
+
+  Widget _buildScale10(BuildContext context) {
   }
 }
