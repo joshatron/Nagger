@@ -38,6 +38,17 @@ class _NagQuestionState extends State<NagQuestionPage> {
   }
 
   Widget _buildConfirmation(BuildContext context) {
+    return Center(
+      child: Column(
+        children: <Widget>[
+          Text(widget.nag.question),
+          FlatButton(
+            child: Text("OK"),
+            onPressed: () => {},
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildYesNo(BuildContext context) {
