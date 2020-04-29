@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:nagger/nag_question.dart';
 import 'package:uuid/uuid.dart';
 
 class NagWidget extends StatefulWidget {
@@ -20,7 +21,7 @@ class _NagWidgetState extends State<NagWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: _toggleCollapsed,
-      child: _collapsed ? _buildCollapsed() : _buildExpanded(),
+      child: _collapsed ? _buildCollapsed(context) : _buildExpanded(context),
     );
   }
 
@@ -30,7 +31,7 @@ class _NagWidgetState extends State<NagWidget> {
     });
   }
 
-  Widget _buildCollapsed() {
+  Widget _buildCollapsed(BuildContext context) {
     return Container(
       height: 50,
       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -50,13 +51,13 @@ class _NagWidgetState extends State<NagWidget> {
     });
   }
 
-  Widget _buildExpanded() {
+  Widget _buildExpanded(BuildContext context) {
     return Container(
-      height: 130,
+      height: 170,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _buildCollapsed(),
+          _buildCollapsed(context),
           Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text('Question: ' + widget.nag.question),
@@ -73,9 +74,20 @@ class _NagWidgetState extends State<NagWidget> {
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text('Next: ' + DateFormat().add_yMd().add_jm().format(widget.nag.nextNag())),
           ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: FlatButton(
+              child: Text("Test"),
+              onPressed: () => {_testNag(context)},
+            ),
+          ),
         ],
       )
     );
+  }
+
+  void _testNag(BuildContext context) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => NagQuestionPage(widget.nag)));
   }
 }
 
